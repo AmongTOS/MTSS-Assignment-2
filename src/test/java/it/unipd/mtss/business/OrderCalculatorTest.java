@@ -166,4 +166,38 @@ public class OrderCalculatorTest {
 
     assertEquals(100.0, computedPrice, DELTA);
   }
+
+  @Test
+  public void testGetOrderPrice_OnSameKeyboardAndMouse()
+          throws OrderBillException {
+    var products = List.of(
+            new EItem(ItemType.Keyboard, "Keyboard", 50),
+            new EItem(ItemType.Mouse, "Mouse", 50),
+            new EItem(ItemType.Motherboard, "ProdottoMenoCaro", 20)
+    );
+
+    var computedPrice = order.getOrderPrice(products, user);
+
+    assertEquals(100.0, computedPrice, DELTA);
+  }
+
+  @Test
+  public void testGetOrderPrice_OnSameTwoDiscountRules()
+          throws OrderBillException {
+    var products = List.of(
+            new EItem(ItemType.Keyboard, "Keyboard", 50),
+            new EItem(ItemType.Mouse, "Mouse", 50),
+            new EItem(ItemType.Motherboard, "ProdottoMenoCaro", 20),
+            new EItem(ItemType.Processor, "Processore1", 50),
+            new EItem(ItemType.Processor, "Processore2", 50),
+            new EItem(ItemType.Processor, "Processore3", 50),
+            new EItem(ItemType.Processor, "Processore4", 50),
+            new EItem(ItemType.Processor, "Processore5", 50),
+            new EItem(ItemType.Processor, "ProcessoreCostoMinimo", 30)
+    );
+
+    var computedPrice = order.getOrderPrice(products, user);
+
+    assertEquals(365, computedPrice, DELTA);
+  }
 }
