@@ -10,11 +10,26 @@ import it.unipd.mtss.model.EItem;
 import it.unipd.mtss.model.ItemType;
 import it.unipd.mtss.model.User;
 
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 import java.util.function.Predicate;
 
 public class OrderCalculator implements Bill {
+
+  private static final LocalTime AFTER = LocalTime.of(18, 0);
+  private static final LocalTime BEFORE = LocalTime.of(19, 0);
+
+  private final Random random;
+  private int giftGiven;
+  private final LocalTime orderTime;
+
+  public OrderCalculator(Random random, LocalTime orderTime) {
+    this.random = random;
+    this.orderTime = orderTime;
+    giftGiven = 0;
+  }
 
   @Override
   public double getOrderPrice(List<EItem> itemsOrdered, User user)
@@ -38,7 +53,25 @@ public class OrderCalculator implements Bill {
       actualPrice += 2;
     }
 
-    return actualPrice;
+    if (isEligibleForChildrenGift(user)) {
+      return 0;
+    } else {
+      return actualPrice;
+    }
+  }
+
+  private boolean isEligibleForChildrenGift(User user) {
+    var isLucky = random.nextBoolean();
+    var gift = user.age < 18
+            && orderTime.isAfter(AFTER)
+            && orderTime.isBefore(BEFORE)
+            && isLucky;
+    if (gift && giftGiven < 10) {
+      giftGiven++;
+      return true;
+    } else {
+      return false;
+    }
   }
 
   private void validateArguments(List<EItem> itemsOrdered, User user)
@@ -71,7 +104,7 @@ public class OrderCalculator implements Bill {
     if (mouseCount == keyboardCount && mouseCount > 0) {
       var cheapestItem = itemsOrdered.stream()
               .filter(e -> !e.isDiscounted)
-              .min((e1, e2) -> (int) (e1.price  - e2.price));
+              .min((e1, e2) -> Double.compare(e1.price, e2.price));
       cheapestItem.ifPresent(e -> {
         e.isDiscounted = true;
         e.price = 0;
@@ -106,7 +139,7 @@ public class OrderCalculator implements Bill {
     if (count >= minimumOrder) {
       var cheapestProcessor = itemsOrdered.stream()
           .filter(match)
-          .min((e1, e2) -> (int) (e1.price - e2.price))
+          .min((e1, e2) -> Double.compare(e1.price, e2.price))
           .get(); // Safe since we know we have at least 5 processors
       cheapestProcessor.price *= discount;
       cheapestProcessor.isDiscounted = true;
