@@ -18,7 +18,12 @@ public class OrderCalculator implements Bill {
   public double getOrderPrice(List<EItem> itemsOrdered, User user)
       throws OrderBillException {
     validateArguments(itemsOrdered, user);
-    return 0;
+
+    var actualPrice = itemsOrdered.stream()
+            .mapToDouble(e -> e.price)
+            .sum();
+
+    return actualPrice;
   }
 
   private void validateArguments(List<EItem> itemsOrdered, User user)

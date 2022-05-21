@@ -102,4 +102,29 @@ public class OrderCalculatorTest {
     assertEquals(0, computedPrice, DELTA);
   }
 
+  @Test
+  public void testGetOrderPrice_OnTwoElements()
+          throws OrderBillException {
+    var products = List.of(
+            new EItem(ItemType.Processor, "Intel Qualcosa", 69),
+            new EItem(ItemType.Motherboard, "MadreTavola", 31)
+    );
+
+    var computedPrice = order.getOrderPrice(products, user);
+
+    assertEquals(100.0, computedPrice, DELTA);
+  }
+
+  @Test
+  public void testGetOrderPrice_OnOneElementWithPriceGreaterThanZero()
+          throws OrderBillException {
+    var products = List.of(
+            new EItem(ItemType.Mouse, "MegaMickey", 22)
+    );
+
+    var computedPrice = order.getOrderPrice(products, user);
+
+    assertEquals(22.0, computedPrice, DELTA);
+  }
+
 }
