@@ -33,6 +33,11 @@ public class OrderCalculator implements Bill {
       actualPrice *= 0.9;
     }
 
+    // Apply 2€ commission on small orders
+    if (actualPrice < 10) {
+      actualPrice += 2;
+    }
+
     return actualPrice;
   }
 
