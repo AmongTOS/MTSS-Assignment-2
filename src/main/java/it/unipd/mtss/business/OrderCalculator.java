@@ -49,6 +49,11 @@ public class OrderCalculator implements Bill {
       throw new OrderBillException("All the items must have a positive price");
     }
 
+    if (itemsOrdered.size() > 30) {
+      throw new OrderBillException(
+          "You can't place an order with more than 30 items"
+      );
+    }
   }
 
   private void applySameQuantityGift(List<EItem> itemsOrdered) {

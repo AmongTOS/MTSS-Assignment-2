@@ -9,6 +9,8 @@ import org.junit.Test;
 
 import java.time.LocalTime;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
@@ -233,5 +235,23 @@ public class OrderCalculatorTest {
     var computedPrice = order.getOrderPrice(products, user);
 
     assertEquals(1048.5, computedPrice, DELTA);
+  }
+
+  @Test
+  public void testGetOrderPrice_OnOverLimitProductList() {
+    var products =
+        Stream.generate(() -> new EItem(ItemType.Mouse, "Mouse", 10))
+            .limit(31)
+            .collect(Collectors.toList());
+
+    OrderBillException exc = assertThrows(
+        OrderBillException.class,
+        () -> order.getOrderPrice(products, user)
+    );
+
+    assertEquals(
+        "You can't place an order with more than 30 items",
+        exc.getMessage()
+    );
   }
 }
