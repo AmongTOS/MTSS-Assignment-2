@@ -101,7 +101,7 @@ public class OrderCalculatorTest {
 
     var computedPrice = order.getOrderPrice(products, user);
 
-    assertEquals(0, computedPrice, DELTA);
+    assertEquals(2, computedPrice, DELTA);
   }
 
   @Test
@@ -253,5 +253,56 @@ public class OrderCalculatorTest {
         "You can't place an order with more than 30 items",
         exc.getMessage()
     );
+  }
+  @Test
+  public void testGetOrderPrice_OnUnderPriceLimit()
+      throws OrderBillException {
+    var products = List.of(
+        new EItem(ItemType.Keyboard, "Tastierina", 9)
+    );
+
+    var computedPrice = order.getOrderPrice(products, user);
+
+    assertEquals(11, computedPrice, DELTA);
+  }
+
+  @Test
+  public void testGetOrderPrice_OnCommissionWithProcessorDiscount()
+      throws OrderBillException {
+    System.out.println("testComissione");
+    var products = List.of(
+        new EItem(ItemType.Processor, "ProcessoreNonCaro", 0.6),
+        new EItem(ItemType.Processor, "Processore1", 1.5),
+        new EItem(ItemType.Processor, "Processore2", 1.5),
+        new EItem(ItemType.Processor, "Processore3", 1.5),
+        new EItem(ItemType.Processor, "Processore4", 1.5),
+        new EItem(ItemType.Processor, "Processore5", 3.5)
+    );
+
+    var computedPrice = order.getOrderPrice(products, user);
+
+    assertEquals(11.8, computedPrice, DELTA);
+  }
+
+  @Test
+  public void testGetOrderPrice_OnCommissionWithMouseDiscount()
+      throws OrderBillException {
+    var products = List.of(
+        new EItem(ItemType.Mouse, "Mouse1", 0.99),
+        new EItem(ItemType.Mouse, "Mouse2", 0.99),
+        new EItem(ItemType.Mouse, "Mouse3", 0.99),
+        new EItem(ItemType.Mouse, "Mouse4", 0.99),
+        new EItem(ItemType.Mouse, "Mouse5", 0.99),
+        new EItem(ItemType.Mouse, "CheapestMouse", 0.90),
+        new EItem(ItemType.Mouse, "Mouse6", 0.99),
+        new EItem(ItemType.Mouse, "Mouse7", 0.99),
+        new EItem(ItemType.Mouse, "Mouse8", 0.99),
+        new EItem(ItemType.Mouse, "Mouse9", 0.99),
+        new EItem(ItemType.Mouse, "Mouse10", 0.99)
+    );
+
+    var computedPrice = order.getOrderPrice(products, user);
+
+    assertEquals(11.9, computedPrice, DELTA);
   }
 }
