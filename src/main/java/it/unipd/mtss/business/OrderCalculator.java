@@ -22,6 +22,7 @@ public class OrderCalculator implements Bill {
     validateArguments(itemsOrdered, user);
     applyProcessorDiscount(itemsOrdered);
     applyMouseGift(itemsOrdered);
+    applySameQuantityGift(itemsOrdered);
 
     var actualPrice = itemsOrdered.stream()
             .mapToDouble(e -> e.price)
@@ -43,6 +44,24 @@ public class OrderCalculator implements Bill {
       throw new OrderBillException("All the items must have a positive price");
     }
 
+  }
+
+  private void applySameQuantityGift(List<EItem> itemsOrdered) {
+    var mouseCount = itemsOrdered.stream()
+            .filter(e -> e.itemType == ItemType.Mouse)
+            .count();
+    var keyboardCount = itemsOrdered.stream()
+            .filter(e -> e.itemType == ItemType.Keyboard)
+            .count();
+    if (mouseCount == keyboardCount && mouseCount > 0) {
+      var cheapestItem = itemsOrdered.stream()
+              .filter(e -> !e.isDiscounted)
+              .min((e1, e2) -> (int) (e1.price  - e2.price));
+      cheapestItem.ifPresent(e -> {
+        e.isDiscounted = true;
+        e.price = 0;
+      });
+    }
   }
 
   private void applyMouseGift(List<EItem> itemsOrdered) {
