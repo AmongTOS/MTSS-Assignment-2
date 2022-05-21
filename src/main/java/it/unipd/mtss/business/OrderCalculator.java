@@ -28,6 +28,11 @@ public class OrderCalculator implements Bill {
             .mapToDouble(e -> e.price)
             .sum();
 
+    // Apply 10% discount on big orders
+    if (actualPrice > 1000) {
+      actualPrice *= 0.9;
+    }
+
     return actualPrice;
   }
 

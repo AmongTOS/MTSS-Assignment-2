@@ -200,4 +200,38 @@ public class OrderCalculatorTest {
 
     assertEquals(365, computedPrice, DELTA);
   }
+
+  @Test
+  public void testGetOrderPrice_OnBigOrderPrice()
+          throws OrderBillException {
+    var products = List.of(
+            new EItem(ItemType.Motherboard, "Board costosa", 550),
+            new EItem(ItemType.Processor, "Processore costoso", 550)
+    );
+
+    var computedPrice = order.getOrderPrice(products, user);
+
+    assertEquals(990, computedPrice, DELTA);
+  }
+
+  @Test
+  public void testGetOrderPrice_OnBigOrderAndMultipleDiscount()
+          throws OrderBillException {
+    var products = List.of(
+            new EItem(ItemType.Keyboard, "Keyboard", 50),
+            new EItem(ItemType.Mouse, "Mouse", 50),
+            new EItem(ItemType.Motherboard, "ProdottoMenoCaro", 20),
+            new EItem(ItemType.Processor, "Processore1", 50),
+            new EItem(ItemType.Processor, "Processore2", 50),
+            new EItem(ItemType.Processor, "Processore3", 50),
+            new EItem(ItemType.Processor, "Processore4", 50),
+            new EItem(ItemType.Processor, "Processore5", 50),
+            new EItem(ItemType.Processor, "ProcessoreCostoMinimo", 30),
+            new EItem(ItemType.Motherboard, "MOBOCostosa", 800)
+    );
+
+    var computedPrice = order.getOrderPrice(products, user);
+
+    assertEquals(1048.5, computedPrice, DELTA);
+  }
 }
