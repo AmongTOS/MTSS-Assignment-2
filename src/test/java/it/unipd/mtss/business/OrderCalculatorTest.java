@@ -127,4 +127,21 @@ public class OrderCalculatorTest {
     assertEquals(22.0, computedPrice, DELTA);
   }
 
+  @Test
+  public void testGetOrderPrice_OnMoreThanFiveProcessors()
+      throws OrderBillException {
+    var products = List.of(
+        new EItem(ItemType.Processor, "Processore1", 50),
+        new EItem(ItemType.Processor, "Processore2", 50),
+        new EItem(ItemType.Processor, "Processore3", 50),
+        new EItem(ItemType.Keyboard, "Tastierona", 50),
+        new EItem(ItemType.Processor, "Processore4", 50),
+        new EItem(ItemType.Processor, "Processore5", 50),
+        new EItem(ItemType.Processor, "ProcessoreCostoMinimo", 30)
+    );
+
+    var computedPrice = order.getOrderPrice(products, user);
+
+    assertEquals(315.0, computedPrice, DELTA);
+  }
 }
