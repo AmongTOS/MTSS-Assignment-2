@@ -144,4 +144,26 @@ public class OrderCalculatorTest {
 
     assertEquals(315.0, computedPrice, DELTA);
   }
+
+  @Test
+  public void testGetOrderPrice_OnMoreThanTenMouse()
+      throws OrderBillException {
+    var products = List.of(
+        new EItem(ItemType.Mouse, "Mouse1", 10),
+        new EItem(ItemType.Mouse, "Mouse2", 10),
+        new EItem(ItemType.Mouse, "Mouse3", 10),
+        new EItem(ItemType.Mouse, "Mouse4", 10),
+        new EItem(ItemType.Mouse, "CheapestMouse", 5),
+        new EItem(ItemType.Mouse, "Mouse5", 10),
+        new EItem(ItemType.Mouse, "Mouse6", 10),
+        new EItem(ItemType.Mouse, "Mouse7", 10),
+        new EItem(ItemType.Mouse, "Mouse8", 10),
+        new EItem(ItemType.Mouse, "Mouse9", 10),
+        new EItem(ItemType.Mouse, "Mouse10", 10)
+    );
+
+    var computedPrice = order.getOrderPrice(products, user);
+
+    assertEquals(100.0, computedPrice, DELTA);
+  }
 }

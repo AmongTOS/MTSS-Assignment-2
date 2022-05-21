@@ -21,6 +21,7 @@ public class OrderCalculator implements Bill {
       throws OrderBillException {
     validateArguments(itemsOrdered, user);
     applyProcessorDiscount(itemsOrdered);
+    applyMouseGift(itemsOrdered);
 
     var actualPrice = itemsOrdered.stream()
             .mapToDouble(e -> e.price)
@@ -44,6 +45,15 @@ public class OrderCalculator implements Bill {
 
   }
 
+  private void applyMouseGift(List<EItem> itemsOrdered) {
+    applyQuantityDiscount(
+        itemsOrdered,
+        10,
+        0.0f,
+        e -> e.itemType == ItemType.Mouse
+    );
+  }
+
   private void applyProcessorDiscount(List<EItem> itemsOrdered) {
     applyQuantityDiscount(
         itemsOrdered,
@@ -52,6 +62,7 @@ public class OrderCalculator implements Bill {
         e -> e.itemType == ItemType.Processor
     );
   }
+
   private void applyQuantityDiscount(
       List<EItem> itemsOrdered, int minimumOrder,
       float discount, Predicate<EItem> match) {
